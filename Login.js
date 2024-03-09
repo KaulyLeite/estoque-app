@@ -5,6 +5,8 @@ import Toast from 'react-native-toast-message';
 import {useNavigation} from '@react-navigation/native';
 import {LinearGradient} from 'expo-linear-gradient';
 import AppBar from './AppBar';
+import Main from './Main';
+import SignUp from './SignUp';
 import {authStyles} from './static/styles/styles_auth';
 
 const Login = () => {
@@ -66,7 +68,7 @@ const Login = () => {
                     position: 'bottom',
                 });
 
-                navigation.navigate('Main');
+                navigation.navigate(Main);
             } else {
                 Toast.show({
                     type: 'error',
@@ -86,7 +88,7 @@ const Login = () => {
     };
 
     const handleNavigateToSignUp = () => {
-        navigation.navigate('SignUp');
+        navigation.navigate(SignUp);
     };
 
     return (
