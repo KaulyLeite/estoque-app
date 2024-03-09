@@ -179,8 +179,8 @@ const RegisterProduct = ({route}) => {
                         placeholder="Quantidade disponível"
                         value={quantity}
                         onChangeText={(text) => {
-                            const numericValue = text.replace(/[^0-9]/g, '');
-                            setQuantity(numericValue);
+                            const numericValue: string = text.replace(/\D/g, '') || '';
+                            setQuantity((prevQuantity) => numericValue);
                         }}
                         keyboardType="numeric"
                         maxLength={4}>
