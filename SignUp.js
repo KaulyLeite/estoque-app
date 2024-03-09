@@ -5,6 +5,7 @@ import Toast from 'react-native-toast-message';
 import {useNavigation} from '@react-navigation/native';
 import {LinearGradient} from 'expo-linear-gradient';
 import AppBar from './AppBar';
+import Login from './Login';
 import {authStyles} from './static/styles/styles_auth';
 
 const SignUp = () => {
@@ -74,7 +75,7 @@ const SignUp = () => {
                 position: 'bottom',
             });
 
-            navigation.navigate('Login');
+            navigation.navigate(Login);
         } catch (error) {
             console.error('Erro ao salvar dados de registro:', error);
 
