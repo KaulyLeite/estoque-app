@@ -5,17 +5,20 @@ import Toast from 'react-native-toast-message';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AppBar from './AppBar';
+import AppExit from './AppExit';
 import mainStyles from './static/styles/styles_main';
 
 const Main = () => {
     const [products, setProducts] = useState([]);
     const navigation = useNavigation();
     const appBar = useMemo(() => <AppBar/>, []);
+    const appExit = useMemo(() => <AppExit/>, []);
 
     useEffect(() => {
         navigation.setOptions({
             title: 'Estoque App',
             headerLeft: () => appBar,
+            headerRight: () => appExit,
         });
     }, [navigation, appBar]);
 
@@ -43,7 +46,8 @@ const Main = () => {
 
     const navigateAsync = async (screen, params) => {
         return new Promise((resolve) => {
-            navigation.navigate(screen, params, resolve);
+            navigation.navigate(screen, params);
+            resolve();
         });
     };
 
