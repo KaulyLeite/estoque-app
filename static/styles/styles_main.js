@@ -15,6 +15,7 @@ export default StyleSheet.create({
         flexDirection: 'row',
     },
     buttonIcon: {
+        color: 'white',
         marginRight: 10,
     },
     centralizationContainer: {

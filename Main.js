@@ -169,7 +169,6 @@ const Main = () => {
                     <Icon
                         name='plus-circle'
                         size={20}
-                        color='white'
                         style={mainStyles.buttonIcon}>
                     </Icon>
                     <Text style={mainStyles.textRegisterButton}>Registrar Novo Produto</Text>
