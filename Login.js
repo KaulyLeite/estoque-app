@@ -22,6 +22,13 @@ const Login = () => {
         });
     }, [navigation, appBar]);
 
+    useEffect(() => {
+        return navigation.addListener('focus', () => {
+            setEmail('');
+            setPassword('');
+        });
+    }, [navigation]);
+
     const handleLogin = async () => {
         try {
             if (!email || !password) {
