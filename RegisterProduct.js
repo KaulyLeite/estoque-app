@@ -179,8 +179,8 @@ const RegisterProduct = ({route}) => {
                         placeholder="Quantidade disponível"
                         value={quantity}
                         onChangeText={(text) => {
-                            const numericValue: string = text.replace(/\D/g, '') || '';
-                            setQuantity((prevQuantity) => numericValue);
+                            const numericValue = text.replace(/\D/g, '') || '';
+                            setQuantity(() => numericValue);
                         }}
                         keyboardType="numeric"
                         maxLength={4}>
@@ -214,7 +214,6 @@ const RegisterProduct = ({route}) => {
                     <Icon
                         name="check-circle"
                         size={20}
-                        color="white"
                         style={registerProductStyles.buttonIcon}>
                     </Icon>
                     <Text style={registerProductStyles.textSaveButton}>Salvar Produto</Text>
