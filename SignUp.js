@@ -125,12 +125,12 @@ const SignUp = () => {
                     <TouchableOpacity
                         style={authStyles.leftButton}
                         onPress={handleGoBack}>
-                        <Text style={authStyles.textLeftButton}>{messages.buttonBack}</Text>
+                        <Text style={authStyles.textLeftButton}>{messages.backButton}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={authStyles.rightButton}
                         onPress={handleSignUp}>
-                        <Text style={authStyles.textRightButton}>{messages.buttonRegister}</Text>
+                        <Text style={authStyles.textRightButton}>{messages.registerButton}</Text>
                     </TouchableOpacity>
                 </View>
             </View>
