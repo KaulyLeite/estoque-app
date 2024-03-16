@@ -3,20 +3,20 @@ import {TouchableOpacity, Alert} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const AppExit = () => {
+const AppExit = ({messages}) => {
     const navigation = useNavigation();
 
     const handleExitPress = () => {
         Alert.alert(
-            'Log Out',
-            'Tem certeza que deseja sair?',
+            messages.logoutTitle,
+            messages.logoutMessage,
             [
                 {
-                    text: 'Cancelar',
+                    text: messages.cancelExitAlertButton,
                     style: 'cancel',
                 },
                 {
-                    text: 'Sim',
+                    text: messages.confirmExitAlertButton,
                     onPress: () => {
                         import('./Login').then((module) => {
                             const login = module.default;

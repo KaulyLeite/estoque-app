@@ -13,10 +13,10 @@ import {strings} from './static/strings/strings';
 const Main = () => {
     const [products, setProducts] = useState([]);
     const navigation = useNavigation();
-    const appBar = useMemo(() => <AppBar/>, []);
-    const appExit = useMemo(() => <AppExit/>, []);
     const deviceLanguage = getLocales()[0].languageCode;
     const messages = strings[deviceLanguage] || strings.en;
+    const appBar = useMemo(() => <AppBar/>, []);
+    const appExit = useMemo(() => <AppExit messages={messages}/>, []);
 
     useEffect(() => {
         navigation.setOptions({

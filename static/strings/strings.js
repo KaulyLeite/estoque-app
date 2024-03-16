@@ -61,6 +61,10 @@ export const strings = {
         productDescriptionLabel: 'Description:',
         productDescriptionPlaceholder: 'Product description',
         saveProductButton: 'Save Product',
+        logoutTitle: 'Log Out',
+        logoutMessage: 'Are you sure you want to log out?',
+        cancelExitAlertButton: 'Cancel',
+        confirmExitAlertButton: 'Yes',
     },
     pt: {
         appName: 'Estoque App',
@@ -124,5 +128,9 @@ export const strings = {
         productDescriptionLabel: 'Descrição:',
         productDescriptionPlaceholder: 'Descrição do produto',
         saveProductButton: 'Salvar Produto',
+        logoutTitle: 'Log Out',
+        logoutMessage: 'Tem certeza que deseja sair?',
+        cancelExitAlertButton: 'Cancelar',
+        confirmExitAlertButton: 'Sim',
     },
 };
