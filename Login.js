@@ -4,9 +4,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import {useNavigation} from '@react-navigation/native';
 import {LinearGradient} from 'expo-linear-gradient';
+import {getLocales} from 'expo-localization';
 import AppBar from './AppBar';
 import Main from './Main';
 import {authStyles} from './static/styles/styles_auth';
+import {strings} from './static/strings/strings';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -14,10 +16,12 @@ const Login = () => {
     const navigation = useNavigation();
     const appBar = useMemo(() => <AppBar/>, []);
     const veryLightOrange = '#ffd6ad';
+    const deviceLanguage = getLocales()[0].languageCode;
+    const messages = strings[deviceLanguage] || strings.en;
 
     useEffect(() => {
         navigation.setOptions({
-            title: 'Estoque App',
+            title: messages.appName,
             headerLeft: () => appBar,
         });
     }, [navigation, appBar]);
@@ -34,7 +38,7 @@ const Login = () => {
             if (!email || !password) {
                 Toast.show({
                     type: 'error',
-                    text1: 'E-mail e senhas são obrigatórios!',
+                    text1: messages.requiredFields,
                     position: 'bottom',
                 });
                 return;
@@ -45,7 +49,7 @@ const Login = () => {
             if (!storedUsersString) {
                 Toast.show({
                     type: 'error',
-                    text1: 'Nenhum usuário registrado! Registre-se.',
+                    text1: messages.noRegisteredUser,
                     position: 'bottom',
                 });
                 return;
@@ -56,7 +60,7 @@ const Login = () => {
             if (!emailRegex.test(email)) {
                 Toast.show({
                     type: 'error',
-                    text1: 'Por favor, insira um e-mail válido!',
+                    text1: messages.invalidEmail,
                     position: 'bottom',
                 });
                 return;
@@ -70,7 +74,7 @@ const Login = () => {
 
                 Toast.show({
                     type: 'success',
-                    text1: 'Login realizado com sucesso!',
+                    text1: messages.loginSuccess,
                     position: 'bottom',
                 });
 
@@ -78,16 +82,16 @@ const Login = () => {
             } else {
                 Toast.show({
                     type: 'error',
-                    text1: 'Login falhou! Verifique suas credenciais.',
+                    text1: messages.loginFailed,
                     position: 'bottom',
                 });
             }
         } catch (error) {
-            console.error('Erro ao salvar dados de login:', error);
+            console.error(messages.saveLoginDataError, error);
 
             Toast.show({
                 type: 'error',
-                text1: 'Erro ao realizar o login!',
+                text1: messages.loginDataError,
                 position: 'bottom',
             });
         }
@@ -105,17 +109,17 @@ const Login = () => {
             end={{x: 1, y: 1}}
             style={authStyles.linearGradient}>
             <View style={authStyles.container}>
-                <Text style={authStyles.title}>Login</Text>
+                <Text style={authStyles.title}>{messages.loginTitle}</Text>
                 <TextInput
                     style={authStyles.input}
-                    placeholder='E-mail'
+                    placeholder={messages.emailPlaceholder}
                     value={email}
                     onChangeText={(text) => setEmail(text)}
                     autoCapitalize='none'>
                 </TextInput>
                 <TextInput
                     style={authStyles.input}
-                    placeholder='Senha'
+                    placeholder={messages.passwordPlaceholder}
                     secureTextEntry
                     value={password}
                     onChangeText={(text) => setPassword(text)}>
@@ -124,12 +128,12 @@ const Login = () => {
                     <TouchableOpacity
                         style={authStyles.leftButton}
                         onPress={handleNavigateToSignUp}>
-                        <Text style={authStyles.textLeftButton}>Sign Up</Text>
+                        <Text style={authStyles.textLeftButton}>{messages.signUpButton}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={authStyles.rightButton}
                         onPress={handleLogin}>
-                        <Text style={authStyles.textRightButton}>Login</Text>
+                        <Text style={authStyles.textRightButton}>{messages.loginButton}</Text>
                     </TouchableOpacity>
                 </View>
             </View>
