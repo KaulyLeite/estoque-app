@@ -215,7 +215,7 @@ const Main = () => {
                         size={20}
                         style={mainStyles.buttonIcon}>
                     </Icon>
-                    <Text style={mainStyles.textRegisterButton}>{messages.registerNewProductButton}</Text>
+                    <Text style={mainStyles.textRegisterButton}>{messages.addNewProductButton}</Text>
                 </TouchableOpacity>
             </View>
             <Text style={mainStyles.title}>{messages.mainTitle}</Text>
