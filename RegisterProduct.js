@@ -89,6 +89,15 @@ const RegisterProduct = ({route}) => {
         return true;
     };
 
+    const showSuccessMessage = (action) => {
+        const successMessage = action === 'edit' ? messages.editProductSuccess : messages.addProductSuccess;
+        Toast.show({
+            type: 'success',
+            text1: successMessage,
+            position: 'bottom',
+        });
+    };
+
     const saveProduct = async () => {
         try {
             const currentUser = await AsyncStorage.getItem('currentUser');
@@ -107,9 +116,7 @@ const RegisterProduct = ({route}) => {
                     description: description,
                 };
 
-                const productsJson = await AsyncStorage.getItem(
-                    `products_${currentUser}`
-                );
+                const productsJson = await AsyncStorage.getItem(`products_${currentUser}`);
                 const products = productsJson ? JSON.parse(productsJson) : [];
                 const updatedProducts = products.map((item) =>
                     item.id === editedProduct.id ? editedProduct : item
@@ -119,6 +126,8 @@ const RegisterProduct = ({route}) => {
                     `products_${currentUser}`,
                     JSON.stringify(updatedProducts)
                 );
+
+                showSuccessMessage('edit');
 
                 if (route.params?.setProducts) {
                     route.params.setProducts(updatedProducts);
@@ -135,9 +144,7 @@ const RegisterProduct = ({route}) => {
                     description: description,
                 };
 
-                const productsJson = await AsyncStorage.getItem(
-                    `products_${currentUser}`
-                );
+                const productsJson = await AsyncStorage.getItem(`products_${currentUser}`);
                 const products = productsJson ? JSON.parse(productsJson) : [];
 
                 products.push(product);
@@ -146,6 +153,8 @@ const RegisterProduct = ({route}) => {
                     `products_${currentUser}`,
                     JSON.stringify(products)
                 );
+
+                showSuccessMessage('add');
 
                 if (route.params?.setProducts) {
                     route.params.setProducts(products);
