@@ -65,6 +65,27 @@ const RegisterProduct = ({route}) => {
             return false;
         }
 
+        const [day, month, year] = data.split('/');
+        const numericDay = parseInt(day, 10);
+        const numericMonth = parseInt(month, 10);
+        const numericYear = parseInt(year, 10);
+
+        if (
+            numericYear < 2000 ||
+            numericYear > 2100 ||
+            numericMonth < 1 ||
+            numericMonth > 12 ||
+            numericDay < 1 ||
+            numericDay > 31
+        ) {
+            Toast.show({
+                type: 'error',
+                text1: messages.invalidDateError,
+                position: 'bottom',
+            });
+            return false;
+        }
+
         return true;
     };
 
