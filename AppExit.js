@@ -8,8 +8,8 @@ const AppExit = ({messages}) => {
 
     const handleExitPress = () => {
         Alert.alert(
-            messages.logoutTitle,
-            messages.logoutMessage,
+            messages.logOutTitle,
+            messages.logOutMessage,
             [
                 {
                     text: messages.cancelExitAlertButton,
