@@ -128,29 +128,69 @@ const Main = () => {
         return <View style={mainStyles.separatorLine}/>;
     };
 
-    const renderProductItem = ({item}) => (
-        <View style={mainStyles.itemContainer}>
-            <View style={mainStyles.renderContainer}>
-                <Text style={mainStyles.itemText}>{`${messages.productName}${item.name}`}</Text>
-                <Text style={mainStyles.itemText}>{`${messages.productPrice}${item.price}`}</Text>
-                <Text style={mainStyles.itemText}>{`${messages.productQuantity}${item.quantity}`}</Text>
-                <Text style={mainStyles.itemText}>{`${messages.productExpirationDate}${item.expirationDate}`}</Text>
-                <Text style={mainStyles.itemText}>{`${messages.productDescription}${item.description}`}</Text>
+    const formatPrice = (price) => {
+        if (deviceLanguage === 'pt') {
+            return formatPriceCurrency(price, 'BRL');
+        } else {
+            return formatPriceCurrency(price, 'USD');
+        }
+    };
+
+    const formatPriceCurrency = (price, currency) => {
+        const formattedPrice = (price / 100).toLocaleString(undefined, {
+            style: 'currency',
+            currency: currency
+        });
+
+        if (currency === 'BRL') {
+            return messages.productPriceUnit + formattedPrice.slice(3);
+        } else {
+            return messages.productPriceUnit + formattedPrice.slice(1);
+        }
+    };
+
+    const formatDate = (dateString) => {
+        let day, month, year;
+
+        if (deviceLanguage === 'pt') {
+            day = dateString.slice(0, 2);
+            month = dateString.slice(2, 4);
+        } else {
+            month = dateString.slice(0, 2);
+            day = dateString.slice(2, 4);
+        }
+        year = dateString.slice(4, 8);
+
+        return `${day}/${month}/${year}`;
+    };
+
+    const renderProductItem = ({item}) => {
+        const formattedPrice = formatPrice(item.price);
+        const formattedExpiryDate = formatDate(item.expirationDate);
+        return (
+            <View style={mainStyles.itemContainer}>
+                <View style={mainStyles.renderContainer}>
+                    <Text style={mainStyles.itemText}>{`${messages.productName}${item.name}`}</Text>
+                    <Text style={mainStyles.itemText}>{`${messages.productPrice}${formattedPrice}`}</Text>
+                    <Text style={mainStyles.itemText}>{`${messages.productQuantity}${item.quantity}`}</Text>
+                    <Text style={mainStyles.itemText}>{`${messages.productExpirationDate}${formattedExpiryDate}`}</Text>
+                    <Text style={mainStyles.itemText}>{`${messages.productDescription}${item.description}`}</Text>
+                </View>
+                <View style={mainStyles.buttonContainer}>
+                    <TouchableOpacity
+                        style={[mainStyles.button, mainStyles.editButton]}
+                        onPress={() => editProduct(item)}>
+                        <Text style={mainStyles.textEditButton}>{messages.editProductButton}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[mainStyles.button, mainStyles.deleteButton]}
+                        onPress={() => confirmDeletion(item.id)}>
+                        <Text style={mainStyles.textDeleteButton}>{messages.deleteProductButton}</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-            <View style={mainStyles.buttonContainer}>
-                <TouchableOpacity
-                    style={[mainStyles.button, mainStyles.editButton]}
-                    onPress={() => editProduct(item)}>
-                    <Text style={mainStyles.textEditButton}>{messages.editProductButton}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[mainStyles.button, mainStyles.deleteButton]}
-                    onPress={() => confirmDeletion(item.id)}>
-                    <Text style={mainStyles.textDeleteButton}>{messages.deleteProductButton}</Text>
-                </TouchableOpacity>
-            </View>
-        </View>
-    );
+        );
+    };
 
     useEffect(() => {
         const backAction = () => {

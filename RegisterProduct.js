@@ -46,6 +46,10 @@ const RegisterProduct = ({route}) => {
             return false;
         }
 
+        if (route.params?.product?.expirationDate === expirationDate) {
+            return true;
+        }
+
         return validateDate(expirationDate);
     };
 
@@ -76,9 +80,9 @@ const RegisterProduct = ({route}) => {
                 const editedProduct = {
                     id: route.params?.product?.id,
                     name: name,
-                    price: price,
+                    price: price.replace(/\D/g, ''),
                     quantity: quantity,
-                    expirationDate: expirationDate,
+                    expirationDate: expirationDate.replace(/\D/g, ''),
                     description: description,
                 };
 
@@ -104,9 +108,9 @@ const RegisterProduct = ({route}) => {
                 const product = {
                     id: new Date().getTime(),
                     name: name,
-                    price: price,
+                    price: price.replace(/\D/g, ''),
                     quantity: quantity,
-                    expirationDate: expirationDate,
+                    expirationDate: expirationDate.replace(/\D/g, ''),
                     description: description,
                 };
 
