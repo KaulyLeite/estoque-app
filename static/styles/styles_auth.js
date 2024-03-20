@@ -66,4 +66,9 @@ export const authStyles = StyleSheet.create({
         fontSize: 20,
         marginBottom: 15,
     },
+    applicationVersion: {
+        color: 'black',
+        fontSize: 15,
+        marginBottom: 10,
+    },
 });
