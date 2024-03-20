@@ -5,6 +5,7 @@ import Toast from 'react-native-toast-message';
 import {useNavigation} from '@react-navigation/native';
 import {LinearGradient} from 'expo-linear-gradient';
 import {getLocales} from 'expo-localization';
+import {version} from './package.json';
 import AppBar from './AppBar';
 import Main from './Main';
 import {authStyles} from './static/styles/styles_auth';
@@ -137,6 +138,7 @@ const Login = () => {
                     </TouchableOpacity>
                 </View>
             </View>
+            <Text style={authStyles.applicationVersion}>{`${messages.applicationVersion}${version}`}</Text>
         </LinearGradient>
     );
 };
