@@ -46,17 +46,13 @@ const RegisterProduct = ({route}) => {
             return false;
         }
 
-        if (route.params?.product?.expirationDate === expirationDate) {
-            return true;
-        }
-
         return validateDate(expirationDate);
     };
 
-    const validateDate = (data) => {
+    const validateDate = (date) => {
         const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
 
-        if (!dateRegex.test(data)) {
+        if (!dateRegex.test(date)) {
             Toast.show({
                 type: 'error',
                 text1: messages.invalidDateError,
@@ -65,10 +61,19 @@ const RegisterProduct = ({route}) => {
             return false;
         }
 
-        const [day, month, year] = data.split('/');
-        const numericDay = parseInt(day, 10);
-        const numericMonth = parseInt(month, 10);
-        const numericYear = parseInt(year, 10);
+        let numericDay, numericMonth, numericYear;
+
+        if (deviceLanguage === 'pt') {
+            const [day, month, year] = date.split('/');
+            numericDay = parseInt(day, 10);
+            numericMonth = parseInt(month, 10);
+            numericYear = parseInt(year, 10);
+        } else {
+            const [month, day, year] = date.split('/');
+            numericDay = parseInt(day, 10);
+            numericMonth = parseInt(month, 10);
+            numericYear = parseInt(year, 10);
+        }
 
         if (
             numericYear < 2000 ||

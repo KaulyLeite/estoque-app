@@ -63,9 +63,14 @@ const Main = () => {
     };
 
     const editProduct = async (product) => {
+        const formattedProduct = {
+            ...product,
+            expirationDate: formatDate(product.expirationDate),
+        };
+
         await navigateAsync('RegisterProduct', {
             setProducts,
-            product,
+            product: formattedProduct,
             isEditing: true,
         });
     };
@@ -149,19 +154,20 @@ const Main = () => {
         }
     };
 
-    const formatDate = (dateString) => {
+    const formatDate = (date) => {
         let day, month, year;
 
         if (deviceLanguage === 'pt') {
-            day = dateString.slice(0, 2);
-            month = dateString.slice(2, 4);
+            day = date.slice(0, 2);
+            month = date.slice(2, 4);
         } else {
-            month = dateString.slice(0, 2);
-            day = dateString.slice(2, 4);
+            month = date.slice(0, 2);
+            day = date.slice(2, 4);
         }
-        year = dateString.slice(4, 8);
 
-        return `${day}/${month}/${year}`;
+        year = date.slice(4, 8);
+
+        return deviceLanguage === 'pt' ? `${day}/${month}/${year}` : `${month}/${day}/${year}`;
     };
 
     const renderProductItem = ({item}) => {
