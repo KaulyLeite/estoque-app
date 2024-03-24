@@ -32,7 +32,7 @@ const AppExit = ({messages}) => {
 
     return (
         <TouchableOpacity onPress={handleExitPress} style={{marginRight: 15}}>
-            <Icon name="sign-out" size={30} color="gray"/>
+            <Icon name='sign-out' size={30} color='gray'/>
         </TouchableOpacity>
     );
 };
