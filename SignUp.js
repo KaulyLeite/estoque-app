@@ -4,8 +4,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import {useNavigation} from '@react-navigation/native';
 import {LinearGradient} from 'expo-linear-gradient';
+import {getLocales} from 'expo-localization';
 import AppBar from './AppBar';
+import Login from './Login';
 import {authStyles} from './static/styles/styles_auth';
+import {strings} from './static/strings/strings';
 
 const SignUp = () => {
     const [email, setEmail] = useState('');
@@ -14,10 +17,12 @@ const SignUp = () => {
     const navigation = useNavigation();
     const appBar = useMemo(() => <AppBar/>, []);
     const veryLightOrange = '#ffd6ad';
+    const deviceLanguage = getLocales()[0].languageCode;
+    const messages = strings[deviceLanguage] || strings.en;
 
     useEffect(() => {
         navigation.setOptions({
-            title: 'Estoque App',
+            title: messages.appName,
             headerLeft: () => appBar,
         });
     }, [navigation, appBar]);
@@ -27,7 +32,7 @@ const SignUp = () => {
             if (!email || !password || !confirmPassword) {
                 Toast.show({
                     type: 'error',
-                    text1: 'E-mail e senhas são obrigatórios!',
+                    text1: messages.requiredFields,
                     position: 'bottom',
                 });
                 return;
@@ -38,7 +43,7 @@ const SignUp = () => {
             if (!emailRegex.test(email)) {
                 Toast.show({
                     type: 'error',
-                    text1: 'Por favor, insira um e-mail válido!',
+                    text1: messages.invalidEmail,
                     position: 'bottom',
                 });
                 return;
@@ -47,7 +52,7 @@ const SignUp = () => {
             if (password !== confirmPassword) {
                 Toast.show({
                     type: 'error',
-                    text1: 'As senhas não coincidem! Tente novamente.',
+                    text1: messages.passwordsDoNotMatch,
                     position: 'bottom',
                 });
                 return;
@@ -59,7 +64,7 @@ const SignUp = () => {
             if (storedUsers[email]) {
                 Toast.show({
                     type: 'error',
-                    text1: 'E-mail já registrado! Escolha outro.',
+                    text1: messages.emailAlreadyRegistered,
                     position: 'bottom',
                 });
                 return;
@@ -70,17 +75,17 @@ const SignUp = () => {
 
             Toast.show({
                 type: 'success',
-                text1: 'Registro realizado com sucesso!',
+                text1: messages.registrationSuccess,
                 position: 'bottom',
             });
 
-            navigation.navigate('Login');
+            navigation.navigate(Login);
         } catch (error) {
-            console.error('Erro ao salvar dados de registro:', error);
+            console.error(messages.saveRegistrationDataError, error);
 
             Toast.show({
                 type: 'error',
-                text1: 'Erro ao realizar o registro!',
+                text1: messages.registrationError,
                 position: 'bottom',
             });
         }
@@ -97,22 +102,22 @@ const SignUp = () => {
             end={{x: 1, y: 1}}
             style={authStyles.linearGradient}>
             <View style={[authStyles.container, authStyles.lowContainer]}>
-                <Text style={authStyles.title}>Sign Up</Text>
+                <Text style={authStyles.title}>{messages.signUpTitle}</Text>
                 <TextInput
                     style={authStyles.input}
-                    placeholder='E-mail'
+                    placeholder={messages.emailPlaceholder}
                     onChangeText={(text) => setEmail(text)}
                     autoCapitalize='none'>
                 </TextInput>
                 <TextInput
                     style={authStyles.input}
-                    placeholder='Senha'
+                    placeholder={messages.passwordPlaceholder}
                     secureTextEntry
                     onChangeText={(text) => setPassword(text)}>
                 </TextInput>
                 <TextInput
                     style={authStyles.input}
-                    placeholder='Confirme a senha'
+                    placeholder={messages.confirmPasswordPlaceholder}
                     secureTextEntry
                     onChangeText={(text) => setConfirmPassword(text)}>
                 </TextInput>
@@ -120,12 +125,12 @@ const SignUp = () => {
                     <TouchableOpacity
                         style={authStyles.leftButton}
                         onPress={handleGoBack}>
-                        <Text style={authStyles.textLeftButton}>Voltar</Text>
+                        <Text style={authStyles.textLeftButton}>{messages.backButton}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={authStyles.rightButton}
                         onPress={handleSignUp}>
-                        <Text style={authStyles.textRightButton}>Registrar</Text>
+                        <Text style={authStyles.textRightButton}>{messages.registerButton}</Text>
                     </TouchableOpacity>
                 </View>
             </View>
