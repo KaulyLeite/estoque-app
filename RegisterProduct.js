@@ -6,7 +6,9 @@ import {useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import PropTypes from 'prop-types';
 import {TextInputMask} from 'react-native-masked-text';
+import {getLocales} from 'expo-localization';
 import registerProductStyles from './static/styles/styles_register_product';
+import {strings} from './static/strings/strings';
 
 LogBox.ignoreLogs([
     'Non-serializable values were found in the navigation state',
@@ -19,6 +21,8 @@ const RegisterProduct = ({route}) => {
     const [expirationDate, setExpirationDate] = useState('');
     const [description, setDescription] = useState('');
     const navigation = useNavigation();
+    const deviceLanguage = getLocales()[0].languageCode;
+    const messages = strings[deviceLanguage] || strings.en;
 
     useEffect(() => {
         if (route.params?.product) {
@@ -36,7 +40,7 @@ const RegisterProduct = ({route}) => {
         if (!name || !price || !quantity || !description) {
             Toast.show({
                 type: 'error',
-                text1: 'Todos os campos são obrigatórios!',
+                text1: messages.allFieldsRequired,
                 position: 'bottom',
             });
             return false;
@@ -45,19 +49,58 @@ const RegisterProduct = ({route}) => {
         return validateDate(expirationDate);
     };
 
-    const validateDate = (data) => {
+    const validateDate = (date) => {
         const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
 
-        if (!dateRegex.test(data)) {
+        if (!dateRegex.test(date)) {
             Toast.show({
                 type: 'error',
-                text1: 'Por favor, insira uma data válida!',
+                text1: messages.invalidDateError,
+                position: 'bottom',
+            });
+            return false;
+        }
+
+        let numericDay, numericMonth, numericYear;
+
+        if (deviceLanguage === 'pt') {
+            const [day, month, year] = date.split('/');
+            numericDay = parseInt(day, 10);
+            numericMonth = parseInt(month, 10);
+            numericYear = parseInt(year, 10);
+        } else {
+            const [month, day, year] = date.split('/');
+            numericDay = parseInt(day, 10);
+            numericMonth = parseInt(month, 10);
+            numericYear = parseInt(year, 10);
+        }
+
+        if (
+            numericYear < 2000 ||
+            numericYear > 2100 ||
+            numericMonth < 1 ||
+            numericMonth > 12 ||
+            numericDay < 1 ||
+            numericDay > 31
+        ) {
+            Toast.show({
+                type: 'error',
+                text1: messages.invalidDateError,
                 position: 'bottom',
             });
             return false;
         }
 
         return true;
+    };
+
+    const showSuccessMessage = (action) => {
+        const successMessage = action === 'edit' ? messages.editProductSuccess : messages.addProductSuccess;
+        Toast.show({
+            type: 'success',
+            text1: successMessage,
+            position: 'bottom',
+        });
     };
 
     const saveProduct = async () => {
@@ -68,19 +111,21 @@ const RegisterProduct = ({route}) => {
                 return;
             }
 
+            const formattedExpirationDate = deviceLanguage === 'pt' ?
+                `${expirationDate.slice(3, 5)}/${expirationDate.slice(0, 2)}/${expirationDate.slice(6)}` :
+                expirationDate;
+
             if (route.params?.product) {
                 const editedProduct = {
                     id: route.params?.product?.id,
                     name: name,
-                    price: price,
+                    price: price.replace(/\D/g, ''),
                     quantity: quantity,
-                    expirationDate: expirationDate,
+                    expirationDate: formattedExpirationDate.replace(/\D/g, ''),
                     description: description,
                 };
 
-                const productsJson = await AsyncStorage.getItem(
-                    `products_${currentUser}`
-                );
+                const productsJson = await AsyncStorage.getItem(`products_${currentUser}`);
                 const products = productsJson ? JSON.parse(productsJson) : [];
                 const updatedProducts = products.map((item) =>
                     item.id === editedProduct.id ? editedProduct : item
@@ -91,6 +136,8 @@ const RegisterProduct = ({route}) => {
                     JSON.stringify(updatedProducts)
                 );
 
+                showSuccessMessage('edit');
+
                 if (route.params?.setProducts) {
                     route.params.setProducts(updatedProducts);
                 }
@@ -100,15 +147,13 @@ const RegisterProduct = ({route}) => {
                 const product = {
                     id: new Date().getTime(),
                     name: name,
-                    price: price,
+                    price: price.replace(/\D/g, ''),
                     quantity: quantity,
-                    expirationDate: expirationDate,
+                    expirationDate: formattedExpirationDate.replace(/\D/g, ''),
                     description: description,
                 };
 
-                const productsJson = await AsyncStorage.getItem(
-                    `products_${currentUser}`
-                );
+                const productsJson = await AsyncStorage.getItem(`products_${currentUser}`);
                 const products = productsJson ? JSON.parse(productsJson) : [];
 
                 products.push(product);
@@ -118,6 +163,8 @@ const RegisterProduct = ({route}) => {
                     JSON.stringify(products)
                 );
 
+                showSuccessMessage('add');
+
                 if (route.params?.setProducts) {
                     route.params.setProducts(products);
                 }
@@ -125,11 +172,11 @@ const RegisterProduct = ({route}) => {
                 navigation.goBack();
             }
         } catch (error) {
-            console.error('Erro ao salvar produto:', error);
+            console.error(messages.errorSavingProduct, error);
 
             Toast.show({
                 type: 'error',
-                text1: 'Erro ao salvar o produto!',
+                text1: messages.saveErrorMessage,
                 position: 'bottom',
             });
         }
@@ -137,7 +184,7 @@ const RegisterProduct = ({route}) => {
 
     useEffect(() => {
         navigation.setOptions({
-            title: route.params?.isEditing ? 'Editar Produto' : 'Cadastrar Produto',
+            title: route.params?.isEditing ? messages.editProductTitle : messages.addProductTitle,
         });
     }, [navigation, route.params]);
 
@@ -145,64 +192,64 @@ const RegisterProduct = ({route}) => {
         <View style={registerProductStyles.container}>
             <View style={registerProductStyles.inputContainer}>
                 <View style={registerProductStyles.fieldContainer}>
-                    <Text style={registerProductStyles.label}>Nome:</Text>
+                    <Text style={registerProductStyles.label}>{messages.productNameLabel}</Text>
                     <TextInput
                         style={registerProductStyles.input}
-                        placeholder="Nome do produto"
+                        placeholder={messages.productNamePlaceholder}
                         value={name}
                         onChangeText={(text) => setName(text)}
                         maxLength={45}>
                     </TextInput>
                 </View>
                 <View style={registerProductStyles.fieldContainer}>
-                    <Text style={registerProductStyles.label}>Preço:</Text>
+                    <Text style={registerProductStyles.label}>{messages.productPriceLabel}</Text>
                     <TextInputMask
                         style={registerProductStyles.input}
                         type={'money'}
                         options={{
                             precision: 2,
-                            separator: ',',
-                            delimiter: '.',
-                            unit: 'R$ ',
+                            separator: messages.productPriceSeparator,
+                            delimiter: messages.productPriceDelimiter,
+                            unit: messages.productPriceUnit,
                             suffixUnit: '',
                         }}
-                        placeholder="R$ 0,00"
+                        placeholder={messages.productPricePlaceholder}
                         value={price}
                         onChangeText={(text) => setPrice(text)}
                         maxLength={12}>
                     </TextInputMask>
                 </View>
                 <View style={registerProductStyles.fieldContainer}>
-                    <Text style={registerProductStyles.label}>Quantidade (Unid.):</Text>
+                    <Text style={registerProductStyles.label}>{messages.productQuantityLabel}</Text>
                     <TextInput
                         style={registerProductStyles.input}
-                        placeholder="Quantidade disponível"
+                        placeholder={messages.productQuantityPlaceholder}
                         value={quantity}
                         onChangeText={(text) => {
-                            const numericValue = text.replace(/[^0-9]/g, '');
-                            setQuantity(numericValue);
+                            const numericValue = text.replace(/\D/g, '') || '';
+                            setQuantity(() => numericValue);
                         }}
-                        keyboardType="numeric"
+                        keyboardType='numeric'
                         maxLength={4}>
                     </TextInput>
                 </View>
                 <View style={registerProductStyles.fieldContainer}>
-                    <Text style={registerProductStyles.label}>Data de Validade:</Text>
+                    <Text style={registerProductStyles.label}>{messages.productExpirationDateLabel}</Text>
                     <TextInputMask
                         style={registerProductStyles.input}
                         type={'datetime'}
-                        options={{format: 'DD/MM/YYYY'}}
-                        placeholder="DD/MM/YYYY"
+                        options={{format: messages.productExpirationDateFormat}}
+                        placeholder={messages.productExpirationDatePlaceholder}
                         value={expirationDate}
                         onChangeText={(text) => setExpirationDate(text)}
                         maxLength={10}>
                     </TextInputMask>
                 </View>
                 <View style={registerProductStyles.fieldContainer}>
-                    <Text style={registerProductStyles.label}>Descrição:</Text>
+                    <Text style={registerProductStyles.label}>{messages.productDescriptionLabel}</Text>
                     <TextInput
                         style={registerProductStyles.input}
-                        placeholder="Descrição do produto"
+                        placeholder={messages.productDescriptionPlaceholder}
                         value={description}
                         onChangeText={(text) => setDescription(text)}
                         maxLength={45}>
@@ -212,12 +259,11 @@ const RegisterProduct = ({route}) => {
             <View style={registerProductStyles.centralizationContainer}>
                 <TouchableOpacity style={registerProductStyles.saveButton} onPress={saveProduct}>
                     <Icon
-                        name="check-circle"
+                        name='check-circle'
                         size={20}
-                        color="white"
                         style={registerProductStyles.buttonIcon}>
                     </Icon>
-                    <Text style={registerProductStyles.textSaveButton}>Salvar Produto</Text>
+                    <Text style={registerProductStyles.textSaveButton}>{messages.saveProductButton}</Text>
                 </TouchableOpacity>
             </View>
         </View>

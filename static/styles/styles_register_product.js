@@ -4,6 +4,7 @@ const veryLightOrange = '#fff3e8';
 
 export default StyleSheet.create({
     buttonIcon: {
+        color: 'white',
         marginRight: 10,
     },
     centralizationContainer: {
