@@ -111,13 +111,17 @@ const RegisterProduct = ({route}) => {
                 return;
             }
 
+            const formattedExpirationDate = deviceLanguage === 'pt' ?
+                `${expirationDate.slice(3, 5)}/${expirationDate.slice(0, 2)}/${expirationDate.slice(6)}` :
+                expirationDate;
+
             if (route.params?.product) {
                 const editedProduct = {
                     id: route.params?.product?.id,
                     name: name,
                     price: price.replace(/\D/g, ''),
                     quantity: quantity,
-                    expirationDate: expirationDate.replace(/\D/g, ''),
+                    expirationDate: formattedExpirationDate.replace(/\D/g, ''),
                     description: description,
                 };
 
@@ -145,7 +149,7 @@ const RegisterProduct = ({route}) => {
                     name: name,
                     price: price.replace(/\D/g, ''),
                     quantity: quantity,
-                    expirationDate: expirationDate.replace(/\D/g, ''),
+                    expirationDate: formattedExpirationDate.replace(/\D/g, ''),
                     description: description,
                 };
 
@@ -225,7 +229,7 @@ const RegisterProduct = ({route}) => {
                             const numericValue = text.replace(/\D/g, '') || '';
                             setQuantity(() => numericValue);
                         }}
-                        keyboardType="numeric"
+                        keyboardType='numeric'
                         maxLength={4}>
                     </TextInput>
                 </View>
@@ -255,7 +259,7 @@ const RegisterProduct = ({route}) => {
             <View style={registerProductStyles.centralizationContainer}>
                 <TouchableOpacity style={registerProductStyles.saveButton} onPress={saveProduct}>
                     <Icon
-                        name="check-circle"
+                        name='check-circle'
                         size={20}
                         style={registerProductStyles.buttonIcon}>
                     </Icon>

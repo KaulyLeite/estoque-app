@@ -155,19 +155,15 @@ const Main = () => {
     };
 
     const formatDate = (date) => {
-        let day, month, year;
+        const day = date.slice(2, 4);
+        const month = date.slice(0, 2);
+        const year = date.slice(4, 8);
 
         if (deviceLanguage === 'pt') {
-            day = date.slice(0, 2);
-            month = date.slice(2, 4);
+            return `${day}/${month}/${year}`;
         } else {
-            month = date.slice(0, 2);
-            day = date.slice(2, 4);
+            return `${month}/${day}/${year}`;
         }
-
-        year = date.slice(4, 8);
-
-        return deviceLanguage === 'pt' ? `${day}/${month}/${year}` : `${month}/${day}/${year}`;
     };
 
     const renderProductItem = ({item}) => {
